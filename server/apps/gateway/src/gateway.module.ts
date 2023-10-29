@@ -12,6 +12,16 @@ import { GraphQLModule } from '@nestjs/graphql';
                     return new RemoteGraphQLDataSource({
                         url,
                         apq: true,
+                        willSendRequest({ request, context }) {
+                            if (context?.req) {
+                                const token = context.req.cookies['jwt'];
+
+                                request.http.headers.set(
+                                    'authorization',
+                                    token,
+                                );
+                            }
+                        },
                     });
                 },
                 supergraphSdl: new IntrospectAndCompose({
