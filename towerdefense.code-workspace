@@ -12,6 +12,10 @@
 			"name": "Gateway",
 			"path": "server/apps/gateway"
 		},
+        {
+			"name": "Microservice Auth",
+			"path": "server/apps/microservice-auth"
+		},
 		{
 			"name": "Microservice Players",
 			"path": "server/apps/microservice-players"
