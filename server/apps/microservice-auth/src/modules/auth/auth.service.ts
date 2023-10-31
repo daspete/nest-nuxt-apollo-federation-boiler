@@ -44,6 +44,7 @@ export class AuthService {
         }
 
         const data = this.jwtService.decode(token, { json: true });
+
         if (!data?.sub) {
             return null;
         }

@@ -1,7 +1,8 @@
-import { IntrospectAndCompose, RemoteGraphQLDataSource } from '@apollo/gateway';
+import { IntrospectAndCompose } from '@apollo/gateway';
 import { ApolloGatewayDriver, ApolloGatewayDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
+import { GraphQLDataSource } from './datasources/graphql.datasource';
 
 @Module({
     imports: [
@@ -9,19 +10,9 @@ import { GraphQLModule } from '@nestjs/graphql';
             driver: ApolloGatewayDriver,
             gateway: {
                 buildService({ url }) {
-                    return new RemoteGraphQLDataSource({
+                    return new GraphQLDataSource({
                         url,
                         apq: true,
-                        willSendRequest({ request, context }) {
-                            if (context?.req) {
-                                const token = context.req.cookies['jwt'];
-
-                                request.http.headers.set(
-                                    'authorization',
-                                    token,
-                                );
-                            }
-                        },
                     });
                 },
                 supergraphSdl: new IntrospectAndCompose({

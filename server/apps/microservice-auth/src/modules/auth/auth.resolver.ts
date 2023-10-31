@@ -32,7 +32,8 @@ export class AuthResolver {
     @Mutation(() => User)
     async login(@Args('data') data: LoginDto, @Context('req') req: Request) {
         const { user, token } = await this.authService.login(data);
-        req.res.cookie('jwt', token, { httpOnly: true });
+        // req.res.cookie('jwt', token, { httpOnly: true });
+        req.res.header('authorization', `Bearer ${token}`);
         return user;
     }
 
