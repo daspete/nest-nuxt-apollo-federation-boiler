@@ -5,7 +5,7 @@ import { GatewayModule } from './gateway.module';
 async function bootstrap() {
     const app = await NestFactory.create(GatewayModule, {
         cors: {
-            origin: '*',
+            origin: ['http://towerdefense.test'],
             credentials: true,
         },
     });

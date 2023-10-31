@@ -8,9 +8,10 @@ export class GraphQLDataSource extends RemoteGraphQLDataSource {
     didReceiveResponse({ response, context }): typeof response {
         const token = response.http.headers.get('authorization');
 
-        if (token) {
+        if (token !== null) {
             context.req.res.cookie('jwt', token.replace('Bearer ', ''), {
                 httpOnly: true,
+                expires: new Date(Date.now() + 1000 * 60 * 5),
             });
         }
 
@@ -18,8 +19,7 @@ export class GraphQLDataSource extends RemoteGraphQLDataSource {
     }
 
     willSendRequest(params: GraphQLDataSourceProcessOptions) {
-        const { request, context, kind } = params;
-        // console.log('headers', context?.req?.res.cookie('jwt'));
+        const { request, kind } = params;
 
         if (kind === GraphQLDataSourceRequestKind.INCOMING_OPERATION) {
             const cookie =
@@ -27,11 +27,16 @@ export class GraphQLDataSource extends RemoteGraphQLDataSource {
                     'cookie',
                 );
 
-            // request.http.headers.set('cookie', cookie);
-            console.log('token', cookie);
-            // if (token) {
-            //     request.http.headers.set('authorization', token);
-            // }
+            if (!cookie) return;
+            const findTokenCookie = () => {
+                const cookies = cookie.split(';');
+                const token = cookies.find((item) => item.includes('jwt'));
+                if (!token) return;
+                return token.split('=')[1];
+            };
+
+            const token = findTokenCookie();
+            request.http.headers.set('authorization', `Bearer ${token}`);
         }
     }
 }

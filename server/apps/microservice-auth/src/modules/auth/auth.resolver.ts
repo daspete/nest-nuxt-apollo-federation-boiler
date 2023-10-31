@@ -40,7 +40,8 @@ export class AuthResolver {
     @UseGuards(AuthGuard)
     @Mutation(() => User)
     async logout(@Context('req') req: Request, @Context('user') user: User) {
-        req.res?.clearCookie('jwt');
+        // req.res?.clearCookie('jwt');
+        req.res.header('authorization', ``);
         return user;
     }
 }
